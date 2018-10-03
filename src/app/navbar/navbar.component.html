@@ -1,25 +1,27 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" routerLink="/">Ae</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/shopping-cart">ShoppingCart</a>
-      </li>
-      <li ngbDropdown class="nav-item dropdown">
-        <a ngbDropdownToggle class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Username
-        </a>
-        <div ngbDropdownMenu class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" routerLink="/orders">My Orders</a>
-          <a class="dropdown-item" routerLink="/admin/orders">Manage Orders</a>
-          <a class="dropdown-item" routerLink="/admin/products">Manage Products</a>
-          <a class="dropdown-item">Log Out</a>
-        </div>
-      </li>
-    </ul>
-  </div>
+  <ul class="navbar-nav mr-auto">
+    <li class="nav-item">
+      <a class="nav-link" routerLink="/shopping-cart">ShoppingCart</a>
+    </li>
+    <li *ngIf="!cookieValue" class="nav-item">
+      <a class="nav-link" routerLink="/login">Login</a>
+    </li>
+    <li *ngIf="!cookieValue" class="nav-item">
+      <a class="nav-link" routerLink="/register">Register</a>
+    </li>
+    <li *ngIf="cookieValue" ngbDropdown class="nav-item dropdown">
+      <a ngbDropdownToggle class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown"
+         aria-haspopup="true" aria-expanded="false">
+        {{ decodedToken.name }}
+      </a>
+      <div ngbDropdownMenu class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <a class="dropdown-item" routerLink="/orders">My Orders</a>
+        <a class="dropdown-item" routerLink="/admin/orders">Manage Orders</a>
+        <a class="dropdown-item" routerLink="/admin/products">Manage Products</a>
+        <a class="dropdown-item" (click)="logout()">Log Out</a>
+      </div>
+    </li>
+  </ul>
 </nav>

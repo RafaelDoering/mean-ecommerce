@@ -8,6 +8,10 @@ import * as express from 'express';
 import * as request from 'request';
 import { join } from 'path';
 
+
+import * as morgan from 'morgan';
+import * as mongoose from 'mongoose';
+
 // Faster server renders w/ Prod mode (dev mode never needed)
 enableProdMode();
 
@@ -19,6 +23,7 @@ const DIST_FOLDER = join(process.cwd(), 'dist');
 
 // * NOTE :: leave this as require() since this file is built Dynamically from webpack
 const { AppServerModuleNgFactory, LAZY_MODULE_MAP } = require('./dist/server/main');
+const config = require('./src/server/config'); // get our config file
 
 // Express Engine
 import { ngExpressEngine } from '@nguniversal/express-engine';
@@ -32,15 +37,16 @@ app.engine('html', ngExpressEngine({
   ]
 }));
 
+mongoose.connect(config.database); // connect to database
+app.use(morgan('dev'));
+
 app.set('view engine', 'html');
 app.set('views', join(DIST_FOLDER, 'browser'));
 
-// proxy requests to your API server
-// for the SSR
-app.use('/api/*', function(req, res) {
-  const url = 'http://jsonplaceholder.typicode.com' + req.originalUrl.replace('/api', '');
-  req.pipe(request(url)).pipe(res);
-});
+const userRoutes = require('./src/server/routes/user');
+const apiRoutes = require('./src/server/routes/api');
+app.use('/', userRoutes);
+app.use('/api', apiRoutes);
 
 // Server static files from /browser
 app.get('*.*', express.static(join(DIST_FOLDER, 'browser')));
